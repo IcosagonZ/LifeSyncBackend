@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from pydantic import BaseModel
+from typing import List
 
 app = FastAPI()
 
@@ -9,9 +11,12 @@ def read_root():
         "version": "0.1.0"
     }
 
-@app.get("/client/version/{client_version}")
-def read_client_version(client_version: str | None = None):
-    print("Client > Version {}".format(client_version))
+class ClientVersion(BaseModel):
+    client_version: str
+
+@app.post("/client/version")
+async def read_client_version(data: ClientVersion):
+    print("Client > Version > {}".format(data.client_version))
     return {
         "status": "OK",
         "version": "0.1.0"
