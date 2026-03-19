@@ -5,6 +5,21 @@ from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from typing import List
 
+# Import models
+from schemas.academics_absent_schema import AcademicsAbsentData, AcademicsAbsentDataRequest
+from schemas.academics_assignment_schema import AcademicsAssignmentData, AcademicsAssignmentDataRequest
+from schemas.academics_exam_schema import AcademicsExamData, AcademicsExamDataRequest
+from schemas.academics_mark_schema import AcademicsMarkData, AcademicsMarkDataRequest
+from schemas.activity_schema import ActivityData, ActivityDataRequest
+from schemas.bodymeasurement_schema import BodyMeasurementData, BodyMeasurementDataRequest
+from schemas.mind_mood_schema import MindMoodData, MindMoodDataRequest
+from schemas.note_schema import NoteData, NoteDataRequest
+from schemas.nutrition_schema import NutritionData, NutritionDataRequest
+from schemas.symptom_schema import SymptomData, SymptomDataRequest
+from schemas.time_schema import TimeData, TimeDataRequest
+from schemas.vitals_schema import VitalsData, VitalsDataRequest
+from schemas.workout_schema import WorkoutData, WorkoutDataRequest
+
 app = FastAPI()
 
 @app.get("/")
@@ -23,162 +38,245 @@ async def read_client_version(request: Request):
         "version": "0.1.0"
     }
 
-class AcademicsAbsentData(BaseModel):
-    reason: str
-    absent_date: str
-    entry_date: str
-    entry_note: str
+@app.post("/recommendations/academics/absent")
+async def read_data_vitals(payload: AcademicsAbsentDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
 
-class AcademicsAbsentDataRequest(BaseModel):
-    version: str
-    data: List[AcademicsAbsentData]
+    recommendation = [
+    ]
 
-class AcademicsAssignmentData(BaseModel):
-    subject: str
-    type: str
-    topic: str
-    submitted: int
-    due_date: str
-    submission_date: str
-    entry_date: str
-    entry_note: str
+    insight = [
+    ]
 
-class AcademicsAssignmentRequest(BaseModel):
-    version: str
-    data: List[AcademicsAssignmentData]
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "academics_absent",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
 
-class AcademicsExamData(BaseModel):
-    subject: str
-    exam_type: str
-    exam_date: str
-    duration: int
-    entry_date: str
-    entry_note: str
+@app.post("/recommendations/academics/assignment")
+async def read_data_vitals(payload: AcademicsAssignmentDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
 
-class AcademicsExamDataRequest(BaseModel):
-    version: str
-    data: List[AcademicsExamData]
+    recommendation = [
+    ]
 
-class AcademicsMarkData(BaseModel):
-    subject: str
-    type: str
-    marks: float
-    marks_total: float
-    entry_date: str
-    entry_note: str
+    insight = [
+    ]
 
-class AcademicsMarkDataRequest(BaseModel):
-    version: str
-    data: List[AcademicsMarkData]
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "academics_absent",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
 
-class ActivityData(BaseModel):
-    name: str
-    duration: int
-    distance: int
-    calories: float
-    entry_date: str
-    entry_note: str
+@app.post("/recommendations/academics/exam")
+async def read_data_vitals(payload: AcademicsExamDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
 
-class ActivityDataRequest(BaseModel):
-    version: str
-    data: List[ActivityData]
+    recommendation = [
+    ]
 
-class BodyMeasurementData(BaseModel):
-    measurement_type: str
-    value: float
-    unit: str
-    entry_date: str
-    entry_note: str
+    insight = [
+    ]
 
-class BodyMeasurementDataRequest(BaseModel):
-    version: str
-    data: List[BodyMeasurementData]
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "academics_exam",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
 
-class MindMoodData(BaseModel):
-    name: str
-    intensity: str
-    resolved: bool
-    end_date: str
-    entry_date: str
-    entry_note: str
+@app.post("/recommendations/academics/mark")
+async def read_data_vitals(payload: AcademicsMarkDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
 
-class MindMoodDataRequest(BaseModel):
-    version: str
-    data: List[MindMoodData]
+    recommendation = [
+    ]
 
-class NoteData(BaseModel):
-    title: str
-    content: str
-    tags: str
-    entry_date: str
+    insight = [
+    ]
 
-class NoteDataRequest(BaseModel):
-    version: str
-    data: List[NoteData]
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "academics_mark",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
 
-class SymptomData(BaseModel):
-    name: str
-    intensity: int
-    resolved: int
-    end_date: str
-    entry_date: str
-    entry_note: str
+@app.post("/recommendations/activity")
+async def read_data_vitals(payload: ActivityDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
 
-class SymptomDataRequest(BaseModel):
-    version: str
-    data: List[SymptomData]
+    recommendation = [
+    ]
 
-class TimeData(BaseModel):
-    event: str
-    duration: int
-    entry_date: str
-    entry_note: str
+    insight = [
+    ]
 
-class TimeDataRequest(BaseModel):
-    version: str
-    data: List[TimeData]
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "activity",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
 
-class WorkoutData(BaseModel):
-    name: str
-    type: str
-    duration: int
-    calories: float
-    reps: int
-    weight: float
-    entry_date: str
-    entry_note: str
+@app.post("/recommendations/bodymeasurement")
+async def read_data_vitals(payload: BodyMeasurementDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
 
-class WorkoutDataRequest(BaseModel):
-    version: str
-    data: List[WorkoutData]
+    recommendation = [
+    ]
 
-class VitalsData(BaseModel):
-  type: str
-  value: str
-  unit: str
-  entry_date: str
-  entry_note: str
+    insight = [
+    ]
 
-class VitalsDataRequest(BaseModel):
-    version: str
-    data: List[VitalsData]
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "bodymeasurement",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
 
-class NutritionData(BaseModel):
-    name: str
-    form: str
-    type: str
-    qty: float
-    calories: float
-    mass: float
-    carbs: float
-    protein: float
-    fats: float
-    entry_date: str
-    entry_note: str
+@app.post("/recommendations/mind/mood")
+async def read_data_vitals(payload: MindMoodDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
 
-class NutritionDataRequest(BaseModel):
-    version: str
-    data: List[NutritionData]
+    recommendation = [
+    ]
+
+    insight = [
+    ]
+
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "mind_mood",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
+
+@app.post("/recommendations/note")
+async def read_data_vitals(payload: NoteDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
+
+    recommendation = [
+    ]
+
+    insight = [
+    ]
+
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "note",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
+
+@app.post("/recommendations/symptom")
+async def read_data_vitals(payload: SymptomDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
+
+    recommendation = [
+    ]
+
+    insight = [
+    ]
+
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "symptom",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
+
+@app.post("/recommendations/time")
+async def read_data_vitals(payload: TimeDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
+
+    recommendation = [
+    ]
+
+    insight = [
+    ]
+
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "time",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
+
+@app.post("/recommendations/workout")
+async def read_data_vitals(payload: WorkoutDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
+
+    recommendation = [
+    ]
+
+    insight = [
+    ]
+
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "workout",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
+
+@app.post("/recommendations/vitals")
+async def read_data_vitals(payload: VitalsDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received {} rows".format(len(payload.data)))
+
+    recommendation = [
+    ]
+
+    insight = [
+    ]
+
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "vitals",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
 
 @app.post("/recommendations/nutrition")
 async def read_data_vitals(payload: NutritionDataRequest):
