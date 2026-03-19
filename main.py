@@ -1,9 +1,11 @@
 # FastAPI backend for LifeSyncAI
 # Run using fastapi dev
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, File, UploadFile
 from pydantic import BaseModel
 from typing import List
+
+import datetime
 
 # Import models
 from schemas.academics_absent_schema import AcademicsAbsentData, AcademicsAbsentDataRequest
@@ -296,4 +298,30 @@ async def read_data_vitals(payload: NutritionDataRequest):
         "score": 67,
         "recommendation": recommendation,
         "insight": insight,
+    }
+
+@app.post("/upload/nutrition")
+async def read_data_vitals(file_upload: UploadFile = File(...)):
+
+    file_uploaded = await file_upload.read()
+
+    # Set file name
+    file_name = str(file_upload.filename).replace(" ", "_")
+    time_current = str(datetime.datetime.now()).replace(" ", "_")
+    file_name_final = "{}_{}".format(time_current, file_name)
+
+    file_path = "uploads/nutrition/{}".format(file_name_final)
+
+    # Save file
+    file_handler = open(file_path, "wb")
+    file_handler.write(file_uploaded)
+    file_handler.close()
+
+    print("File saved")
+
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "nutrition_name": "Pizza",
+        "nutrition_calories": 167,
     }
