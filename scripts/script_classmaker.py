@@ -1,13 +1,10 @@
 class_dart = '''
   String name;
-  String form;
   String type;
-  double qty;
+  int duration;
   double calories;
-  double mass;
-  double carbs;
-  double protein;
-  double fats;
+  int reps;
+  double weight;
   DateTime entry_date;
   String entry_note;
 '''
@@ -23,7 +20,8 @@ type_conversion = {
     "String":"str",
     "DateTime":"str",
     "double":"float",
-    "int":"int"
+    "int":"int",
+    "bool":"bool"
 }
 
 for item in class_split:
