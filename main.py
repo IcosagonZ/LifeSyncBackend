@@ -1,14 +1,11 @@
 # FastAPI backend for LifeSyncAI
 # Run using fastapi dev
-
-
-from fastapi import FastAPI, Request, File, UploadFile
+from fastapi import FastAPI, Request, File, UploadFile, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
 import models, schemas, auth
-
 import datetime
 
 # Import models
@@ -25,6 +22,7 @@ from schemas.symptom_schema import SymptomData, SymptomDataRequest
 from schemas.time_schema import TimeData, TimeDataRequest
 from schemas.vitals_schema import VitalsData, VitalsDataRequest
 from schemas.workout_schema import WorkoutData, WorkoutDataRequest
+from schemas.user_schema import UserCreate, UserLogin
 
 app = FastAPI()
 
@@ -38,7 +36,7 @@ def get_db():
         db.close()
 
 @app.post("/signup")
-def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
+def signup(user: UserCreate, db: Session = Depends(get_db)):
     existing = db.query(models.User).filter(models.User.username == user.username).first()
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
@@ -52,7 +50,7 @@ def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return {"message": "User created"}
 
 @app.post("/login")
-def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
+def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.username == user.username).first()
 
     if not db_user or not auth.verify_password(user.password, db_user.password):

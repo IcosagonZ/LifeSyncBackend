@@ -1,8 +1,8 @@
 from passlib.context import CryptContext
-from jose import JWTError, jwt
+from jose import jwt
 from datetime import datetime, timedelta
 
-SECRET_KEY = "your_secret_key"
+SECRET_KEY = "secret123"
 ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
