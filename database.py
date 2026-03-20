@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "mysql+pymysql://root:navami1234@localhost/lifesync"
+DATABASE_URL = "mysql+pymysql://lifesync:12345@localhost/lifesync"
 
 engine = create_engine(DATABASE_URL)
 
