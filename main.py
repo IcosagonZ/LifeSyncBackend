@@ -1,11 +1,51 @@
 # FastAPI backend for LifeSyncAI
 # Run using fastapi dev
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List
+from sqlalchemy.orm import Session
+from database import SessionLocal, engine
+import models, schemas, auth
 
 app = FastAPI()
+
+models.Base.metadata.create_all(bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.post("/signup")
+def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    existing = db.query(models.User).filter(models.User.username == user.username).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="User already exists")
+
+    hashed = auth.hash_password(user.password)
+
+    new_user = models.User(username=user.username, password=hashed)
+    db.add(new_user)
+    db.commit()
+
+    return {"message": "User created"}
+
+@app.post("/login")
+def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+
+    if not db_user or not auth.verify_password(user.password, db_user.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    token = auth.create_token({"sub": user.username})
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }
 
 @app.get("/")
 def read_root():
@@ -22,6 +62,7 @@ async def read_client_version(request: Request):
         "status": "OK",
         "version": "0.1.0"
     }
+
 
 # Vitals data processing
 class VitalsData(BaseModel):
