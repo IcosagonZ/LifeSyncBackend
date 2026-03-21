@@ -4,29 +4,49 @@ from fastapi import FastAPI, Request, File, UploadFile, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine
-import models, schemas, auth
+
+import LifeSyncBackend.models, LifeSyncBackend.schemas, LifeSyncBackend.auth
 import datetime
 
+from LifeSyncBackend.database import SessionLocal, engine
+
 # Import models
-from schemas.academics_absent_schema import AcademicsAbsentData, AcademicsAbsentDataRequest
-from schemas.academics_assignment_schema import AcademicsAssignmentData, AcademicsAssignmentDataRequest
-from schemas.academics_exam_schema import AcademicsExamData, AcademicsExamDataRequest
-from schemas.academics_mark_schema import AcademicsMarkData, AcademicsMarkDataRequest
-from schemas.activity_schema import ActivityData, ActivityDataRequest
-from schemas.bodymeasurement_schema import BodyMeasurementData, BodyMeasurementDataRequest
-from schemas.mind_mood_schema import MindMoodData, MindMoodDataRequest
-from schemas.note_schema import NoteData, NoteDataRequest
-from schemas.nutrition_schema import NutritionData, NutritionDataRequest
-from schemas.symptom_schema import SymptomData, SymptomDataRequest
-from schemas.time_schema import TimeData, TimeDataRequest
-from schemas.vitals_schema import VitalsData, VitalsDataRequest
-from schemas.workout_schema import WorkoutData, WorkoutDataRequest
-from schemas.user_schema import UserCreate, UserLogin
+from LifeSyncBackend.schemas.all_schema import AllDataRequest
+
+from LifeSyncBackend.schemas.academics_absent_schema import AcademicsAbsentData, AcademicsAbsentDataRequest
+from LifeSyncBackend.schemas.academics_assignment_schema import AcademicsAssignmentData, AcademicsAssignmentDataRequest
+from LifeSyncBackend.schemas.academics_exam_schema import AcademicsExamData, AcademicsExamDataRequest
+from LifeSyncBackend.schemas.academics_mark_schema import AcademicsMarkData, AcademicsMarkDataRequest
+from LifeSyncBackend.schemas.activity_schema import ActivityData, ActivityDataRequest
+from LifeSyncBackend.schemas.bodymeasurement_schema import BodyMeasurementData, BodyMeasurementDataRequest
+from LifeSyncBackend.schemas.mind_mood_schema import MindMoodData, MindMoodDataRequest
+from LifeSyncBackend.schemas.note_schema import NoteData, NoteDataRequest
+from LifeSyncBackend.schemas.nutrition_schema import NutritionData, NutritionDataRequest
+from LifeSyncBackend.schemas.symptom_schema import SymptomData, SymptomDataRequest
+from LifeSyncBackend.schemas.time_schema import TimeData, TimeDataRequest
+from LifeSyncBackend.schemas.vitals_schema import VitalsData, VitalsDataRequest
+from LifeSyncBackend.schemas.workout_schema import WorkoutData, WorkoutDataRequest
+from LifeSyncBackend.schemas.user_schema import UserCreate, UserLogin
+
+# Import analyzers
+from LifeSyncBackend.analyzer.academics_absent_analyzer import academics_absent_analyzer
+from LifeSyncBackend.analyzer.academics_assignment_analyzer import academics_assignment_analyzer
+from LifeSyncBackend.analyzer.academics_exam_analyzer import academics_exam_analyzer
+from LifeSyncBackend.analyzer.academics_mark_analyzer import academics_mark_analyzer
+from LifeSyncBackend.analyzer.activity_analyzer import activity_analyzer
+from LifeSyncBackend.analyzer.all_analyzer import all_analyzer
+from LifeSyncBackend.analyzer.bodymeasurement_analyzer import bodymeasurement_analyzer
+from LifeSyncBackend.analyzer.mind_mood_analyzer import mind_mood_analyzer
+from LifeSyncBackend.analyzer.note_analyzer import note_analyzer
+from LifeSyncBackend.analyzer.nutrition_analyzer import nutrition_analyzer
+from LifeSyncBackend.analyzer.symptom_analyzer import symptom_analyzer
+from LifeSyncBackend.analyzer.time_analyzer import time_analyzer
+from LifeSyncBackend.analyzer.vitals_analyzer import vitals_analyzer
+from LifeSyncBackend.analyzer.workout_analyzer import workout_analyzer
 
 app = FastAPI()
 
-models.Base.metadata.create_all(bind=engine)
+LifeSyncBackend.models.Base.metadata.create_all(bind=engine)
 
 def get_db():
     db = SessionLocal()
@@ -80,15 +100,11 @@ async def read_client_version(request: Request):
     }
 
 @app.post("/recommendations/academics/absent")
-async def read_data_vitals(payload: AcademicsAbsentDataRequest):
+async def read_data_academics_absent(payload: AcademicsAbsentDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = academics_absent_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -100,15 +116,11 @@ async def read_data_vitals(payload: AcademicsAbsentDataRequest):
     }
 
 @app.post("/recommendations/academics/assignment")
-async def read_data_vitals(payload: AcademicsAssignmentDataRequest):
+async def read_data_academics_assignment(payload: AcademicsAssignmentDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = academics_assignment_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -120,15 +132,11 @@ async def read_data_vitals(payload: AcademicsAssignmentDataRequest):
     }
 
 @app.post("/recommendations/academics/exam")
-async def read_data_vitals(payload: AcademicsExamDataRequest):
+async def read_data_academics_exam(payload: AcademicsExamDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = academics_exam_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -140,15 +148,11 @@ async def read_data_vitals(payload: AcademicsExamDataRequest):
     }
 
 @app.post("/recommendations/academics/mark")
-async def read_data_vitals(payload: AcademicsMarkDataRequest):
+async def read_data_academics_mark(payload: AcademicsMarkDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = academics_mark_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -160,15 +164,11 @@ async def read_data_vitals(payload: AcademicsMarkDataRequest):
     }
 
 @app.post("/recommendations/activity")
-async def read_data_vitals(payload: ActivityDataRequest):
+async def read_data_activity(payload: ActivityDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = activity_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -180,15 +180,11 @@ async def read_data_vitals(payload: ActivityDataRequest):
     }
 
 @app.post("/recommendations/bodymeasurement")
-async def read_data_vitals(payload: BodyMeasurementDataRequest):
+async def read_data_bodymeasurement(payload: BodyMeasurementDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = bodymeasurement_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -200,15 +196,11 @@ async def read_data_vitals(payload: BodyMeasurementDataRequest):
     }
 
 @app.post("/recommendations/mind/mood")
-async def read_data_vitals(payload: MindMoodDataRequest):
+async def read_data_mind_mood(payload: MindMoodDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = mind_mood_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -220,15 +212,11 @@ async def read_data_vitals(payload: MindMoodDataRequest):
     }
 
 @app.post("/recommendations/note")
-async def read_data_vitals(payload: NoteDataRequest):
+async def read_data_note(payload: NoteDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = note_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -240,15 +228,11 @@ async def read_data_vitals(payload: NoteDataRequest):
     }
 
 @app.post("/recommendations/symptom")
-async def read_data_vitals(payload: SymptomDataRequest):
+async def read_data_symptom(payload: SymptomDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = symptom_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -260,15 +244,11 @@ async def read_data_vitals(payload: SymptomDataRequest):
     }
 
 @app.post("/recommendations/time")
-async def read_data_vitals(payload: TimeDataRequest):
+async def read_data_time(payload: TimeDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = time_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -280,15 +260,11 @@ async def read_data_vitals(payload: TimeDataRequest):
     }
 
 @app.post("/recommendations/workout")
-async def read_data_vitals(payload: WorkoutDataRequest):
+async def read_data_workout(payload: WorkoutDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = workout_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -304,11 +280,7 @@ async def read_data_vitals(payload: VitalsDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    [recommendation, insight] = vitals_analyzer(payload)
 
     return {
         "status": "OK",
@@ -320,96 +292,11 @@ async def read_data_vitals(payload: VitalsDataRequest):
     }
 
 @app.post("/recommendations/nutrition")
-async def read_data_vitals(payload: NutritionDataRequest):
+async def read_data_nutrition(payload: NutritionDataRequest):
     #print("Client>Version: {}".format(payload.version))
     #print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
-
-    user_weight = 64 #kg
-    user_height = 170 #cm
-    user_age = 21
-    user_gender = "M"
-    user_activity = "lightly_active"
-
-    # Calculate calories needed
-    user_basal_metabolic_rate = 10 * user_weight + 6.25 * user_height - 5.0 * user_age
-    if(user_gender=="F"):
-        user_basal_metabolic_rate -= 161
-    else:
-        user_basal_metabolic_rate += 5
-    '''
-    If you are sedentary (little or no exercise) : Calorie-Calculation = BMR x 1.2
-    If you are lightly active (light exercise/sports 1-3 days​/week) : Calorie-Calculation = BMR x 1.375
-    If you are moderately active (moderate exercise/sports 3-5 days/week) : Calorie-Calculation = BMR x 1.55
-    If you are very active (hard exercise/sports 6-7 days a week) : Calorie-Calculation = BMR x 1.725
-    If you are extra active (very hard exercise/sports & physical job or 2x training) : Calorie-Calculation = BMR x 1.9
-    '''
-    total_calories_multiplier = {
-        "sedentary":1.2,
-        "lightly_active":1.375,
-        "moderately_active":1.55,
-        "very_active":1.725,
-        "extra_active":1.9,
-    }
-    user_total_calorie_needs = user_basal_metabolic_rate * total_calories_multiplier[user_activity]
-
-    # Add up calories, proteins, fats, carbohydrates (assuming same day)
-    total_calories = 0
-    total_carbs = 0
-    total_fats = 0
-    total_proteins = 0
-    nutrition_data = payload.data
-    for item in nutrition_data:
-        total_calories += item.calories
-        total_carbs += item.carbs
-        total_fats += item.fats
-        total_proteins += item.protein
-
-    # Energy requirements
-    if(abs(total_calories-user_total_calorie_needs)<100):
-        insight.append(["Nutrition", "Meeting daily energy requirements", "You are meeting your daily energy requirements of {} cal".format(user_total_calorie_needs)])
-    elif(total_calories<user_total_calorie_needs):
-        recommendation.append(["Nutrition", "Consuming less than energy requirements", "You are not meeting your daily energy requirements of {} cal".format(user_total_calorie_needs)])
-    else:
-        recommendation.append(["Nutrition", "Consuming more than energy requirements", "You are eating more than your daily energy requirements of {} cal".format(user_total_calorie_needs)])
-
-    # Carb requirements
-    user_carbs = 130
-    if(abs(total_carbs-user_carbs)<10):
-        insight.append(["Nutrition", "Meeting carbohydrate requirements", "You are meeting your daily carbohydrate requirements of {} g".format(user_carbs)])
-    elif(total_calories<user_carbs):
-        recommendation.append(["Nutrition", "Short of carbohydrate requirements", "You are not meeting your daily carbohydrate requirements of {} g".format(user_carbs)])
-    else:
-        recommendation.append(["Nutrition", "Short of carbohydrate requirements", "You are consuming more than your daily carbohydrate requirements of {} g".format(user_carbs)])
-
-    # Fat requirements
-    user_fats_lower = user_total_calorie_needs*0.2
-    user_fats_high = user_total_calorie_needs*0.35
-
-    if(total_fats>user_fats_lower and total_fats<user_fats_high):
-        insight.append(["Nutrition", "Meeting fat requirements", "You are meeting your daily fat requirements of {} g to {} g".format(user_fats_lower, user_fats_high)])
-    elif(total_fats<user_fats_lower):
-        recommendation.append(["Nutrition", "Short of fat requirements", "You are not meeting your fat requirements of {} g to {} g".format(user_fats_lower, user_fats_high)])
-    else:
-        recommendation.append(["Nutrition", "Short of fat requirements", "You are consuming more than your daily fat requirements of {} g to {} g".format(user_fats_lower, user_fats_high)])
-
-    # Protein requirements
-    protein_requirement = {
-        "M":56,
-        "F":46
-    }
-    user_proteins = protein_requirement[user_gender]
-    if(abs(total_fats-user_proteins)<10):
-        insight.append(["Nutrition", "Meeting protein requirements", "You are meeting your daily protein requirements of {} g".format(user_proteins)])
-    elif(total_calories<user_proteins):
-        recommendation.append(["Nutrition", "Short of protein requirements", "You are not meeting your daily protein requirements of {} g".format(user_proteins)])
-    else:
-        recommendation.append(["Nutrition", "Short of protein requirements", "You are consuming more than your daily protein requirements of {} g".format(user_proteins)])
+    [recommendation, insight] = nutrition_analyzer(payload.data)
 
     return {
         "status": "OK",
@@ -420,30 +307,12 @@ async def read_data_vitals(payload: NutritionDataRequest):
         "insight": insight,
     }
 
-class AllDataRequest(BaseModel):
-    version: str
-    academics_absent_data: List[AcademicsAbsentData]
-    academics_assignment_data: List[AcademicsAssignmentData]
-    academics_mark_data: List[AcademicsMarkData]
-    bodymeasurement_data: List[BodyMeasurementData]
-    mind_mood_data: List[MindMoodData]
-    activity_data: List[ActivityData]
-    nutrition_data: List[NutritionData]
-    symptom_data: List[SymptomData]
-    time_data: List[TimeData]
-    vitals_data: List[VitalsData]
-    workout_data: List[WorkoutData]
-
 @app.post("/recommendations/all")
 async def read_data_all(payload: AllDataRequest):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received all data")
 
-    recommendation = [
-    ]
-
-    insight = [
-    ]
+    recommendation, insight = all_analyzer(payload)
 
     return {
         "status": "OK",
