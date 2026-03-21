@@ -420,8 +420,42 @@ async def read_data_vitals(payload: NutritionDataRequest):
         "insight": insight,
     }
 
+class AllDataRequest(BaseModel):
+    version: str
+    academics_absent_data: List[AcademicsAbsentData]
+    academics_assignment_data: List[AcademicsAssignmentData]
+    academics_mark_data: List[AcademicsMarkData]
+    bodymeasurement_data: List[BodyMeasurementData]
+    mind_mood_data: List[MindMoodData]
+    activity_data: List[ActivityData]
+    nutrition_data: List[NutritionData]
+    symptom_data: List[SymptomData]
+    time_data: List[TimeData]
+    vitals_data: List[VitalsData]
+    workout_data: List[WorkoutData]
+
+@app.post("/recommendations/all")
+async def read_data_all(payload: AllDataRequest):
+    print("Client>Version: {}".format(payload.version))
+    print("Client>Data: Received all data")
+
+    recommendation = [
+    ]
+
+    insight = [
+    ]
+
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "type": "vitals",
+        "score": 67,
+        "recommendation": recommendation,
+        "insight": insight,
+    }
+
 @app.post("/upload/nutrition")
-async def read_data_vitals(file_upload: UploadFile = File(...)):
+async def read_image_nutrition(file_upload: UploadFile = File(...)):
 
     file_uploaded = await file_upload.read()
 
