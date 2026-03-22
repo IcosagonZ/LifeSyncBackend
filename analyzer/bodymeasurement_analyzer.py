@@ -7,5 +7,5 @@ def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
 
     insight = [
     ]
-
+    
     return [recommendation, insight]
