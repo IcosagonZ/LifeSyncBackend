@@ -1,5 +1,5 @@
 from typing import List
-from LifeSyncBackend.schemas.activity_schema import ActivityData, ActivityDataRequest
+from LifeSyncBackend.schemas.activity_schema import ActivityData
 
 def activity_analyzer(data: List[ActivityData]):
     recommendation = [
@@ -7,6 +7,9 @@ def activity_analyzer(data: List[ActivityData]):
 
     insight = [
     ]
+
+    step_goal = 10000          
+    distance_goal = 5         
 
     total_duration = 0
     total_calories = 0
@@ -50,6 +53,34 @@ def activity_analyzer(data: List[ActivityData]):
             "You are only active for {:.2f} minutes. Increase physical activity for better health.".format(avg_duration)
         ])
 
+    if total_distance >= distance_goal:
+        insight.append([
+            "Activity",
+            "Distance goal met",
+            "You covered {:.2f} units and met your distance goal of {} units.".format(total_distance, distance_goal)
+        ])
+    else:
+        recommendation.append([
+            "Activity",
+            "Distance below goal",
+            "You covered {:.2f} units. Try to reach {} units.".format(total_distance, distance_goal)
+        ])
+
+    steps_estimated = total_distance * 1300
+
+    if steps_estimated >= step_goal:
+        insight.append([
+            "Activity",
+            "Step goal met",
+            "You achieved approximately {} steps, meeting your goal of {} steps.".format(int(steps_estimated), step_goal)
+        ])
+    else:
+        recommendation.append([
+            "Activity",
+            "Step goal not met",
+            "You achieved approximately {} steps. Try to reach {} steps.".format(int(steps_estimated), step_goal)
+        ])
+
     insight.append([
         "Activity",
         "Calories burned",
@@ -59,7 +90,7 @@ def activity_analyzer(data: List[ActivityData]):
     insight.append([
         "Activity",
         "Distance covered",
-        "You covered a total distance of {} units.".format(total_distance)
+        "You covered a total distance of {:.2f} units.".format(total_distance)
     ])
 
     return [recommendation, insight]
