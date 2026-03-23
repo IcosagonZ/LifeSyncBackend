@@ -25,9 +25,12 @@ FastAPI backend for LifeSync app with ML recommendation and analysis support
 - FastAPI
 - PyDantic
 - Typing
+- SQLAlchemy
+- Jose (JWT)
 
 ## Running
-Run `fastapi dev`
+- Go to root of project folder
+- Run `uvicorn LifeSyncBackend.main:app --reload`
 
 ## References
 
