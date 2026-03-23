@@ -28,6 +28,7 @@ def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
             "Insufficient data",
             "Height or weight data missing for BMI calculation."
         ])
+        return [recommendation, insight]
 
     if weight_unit == "kg":
         weight_kg = user_weight

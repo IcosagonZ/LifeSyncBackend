@@ -1,13 +1,17 @@
 # FastAPI backend for LifeSyncAI
 # Run using fastapi dev
-from fastapi import FastAPI, Request, File, UploadFile, Depends, HTTPException
+from fastapi import FastAPI, Request, File, UploadFile, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
+from jose import jwt
 
 from pydantic import BaseModel
 from typing import List
 import datetime
 
 import LifeSyncBackend.models, LifeSyncBackend.schemas, LifeSyncBackend.auth
+
+from LifeSyncBackend.auth import SECRET_KEY, ALGORITHM
 from LifeSyncBackend.database import SessionLocal, engine
 
 # Import models
@@ -47,6 +51,7 @@ from LifeSyncBackend.analyzer.workout_analyzer import workout_analyzer
 app = FastAPI()
 
 LifeSyncBackend.models.Base.metadata.create_all(bind=engine)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def get_db():
     db = SessionLocal()
@@ -54,6 +59,21 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Token validation error",
+        headers={"WWW-Authenticate":"Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        if(user_id is None):
+            raise credentials_exception
+        return user_id
+    except JWTError:
+        raise credentials_exception
 
 @app.post("/signup")
 def signup(user: UserCreate, db: Session = Depends(get_db)):
@@ -121,7 +141,7 @@ async def read_client_version(request: Request):
     }
 
 @app.post("/recommendations/academics/absent")
-async def read_data_academics_absent(payload: AcademicsAbsentDataRequest):
+async def read_data_academics_absent(payload: AcademicsAbsentDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -137,7 +157,7 @@ async def read_data_academics_absent(payload: AcademicsAbsentDataRequest):
     }
 
 @app.post("/recommendations/academics/assignment")
-async def read_data_academics_assignment(payload: AcademicsAssignmentDataRequest):
+async def read_data_academics_assignment(payload: AcademicsAssignmentDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -153,7 +173,7 @@ async def read_data_academics_assignment(payload: AcademicsAssignmentDataRequest
     }
 
 @app.post("/recommendations/academics/exam")
-async def read_data_academics_exam(payload: AcademicsExamDataRequest):
+async def read_data_academics_exam(payload: AcademicsExamDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -169,7 +189,7 @@ async def read_data_academics_exam(payload: AcademicsExamDataRequest):
     }
 
 @app.post("/recommendations/academics/mark")
-async def read_data_academics_mark(payload: AcademicsMarkDataRequest):
+async def read_data_academics_mark(payload: AcademicsMarkDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -185,7 +205,7 @@ async def read_data_academics_mark(payload: AcademicsMarkDataRequest):
     }
 
 @app.post("/recommendations/activity")
-async def read_data_activity(payload: ActivityDataRequest):
+async def read_data_activity(payload: ActivityDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -201,7 +221,7 @@ async def read_data_activity(payload: ActivityDataRequest):
     }
 
 @app.post("/recommendations/bodymeasurement")
-async def read_data_bodymeasurement(payload: BodyMeasurementDataRequest):
+async def read_data_bodymeasurement(payload: BodyMeasurementDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -217,7 +237,7 @@ async def read_data_bodymeasurement(payload: BodyMeasurementDataRequest):
     }
 
 @app.post("/recommendations/mind/mood")
-async def read_data_mind_mood(payload: MindMoodDataRequest):
+async def read_data_mind_mood(payload: MindMoodDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -233,7 +253,7 @@ async def read_data_mind_mood(payload: MindMoodDataRequest):
     }
 
 @app.post("/recommendations/note")
-async def read_data_note(payload: NoteDataRequest):
+async def read_data_note(payload: NoteDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -249,7 +269,7 @@ async def read_data_note(payload: NoteDataRequest):
     }
 
 @app.post("/recommendations/symptom")
-async def read_data_symptom(payload: SymptomDataRequest):
+async def read_data_symptom(payload: SymptomDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -265,7 +285,7 @@ async def read_data_symptom(payload: SymptomDataRequest):
     }
 
 @app.post("/recommendations/time")
-async def read_data_time(payload: TimeDataRequest):
+async def read_data_time(payload: TimeDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -281,7 +301,7 @@ async def read_data_time(payload: TimeDataRequest):
     }
 
 @app.post("/recommendations/workout")
-async def read_data_workout(payload: WorkoutDataRequest):
+async def read_data_workout(payload: WorkoutDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -297,7 +317,7 @@ async def read_data_workout(payload: WorkoutDataRequest):
     }
 
 @app.post("/recommendations/vitals")
-async def read_data_vitals(payload: VitalsDataRequest):
+async def read_data_vitals(payload: VitalsDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -313,7 +333,7 @@ async def read_data_vitals(payload: VitalsDataRequest):
     }
 
 @app.post("/recommendations/nutrition")
-async def read_data_nutrition(payload: NutritionDataRequest):
+async def read_data_nutrition(payload: NutritionDataRequest, current_user: str = Depends(get_current_user)):
     #print("Client>Version: {}".format(payload.version))
     #print("Client>Data: Received {} rows".format(len(payload.data)))
 
@@ -329,7 +349,8 @@ async def read_data_nutrition(payload: NutritionDataRequest):
     }
 
 @app.post("/recommendations/all")
-async def read_data_all(payload: AllDataRequest):
+async def read_data_all(payload: AllDataRequest, current_user: str = Depends(get_current_user)):
+    print("Client>User: {}".format(current_user))
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received all data")
 
@@ -345,7 +366,7 @@ async def read_data_all(payload: AllDataRequest):
     }
 
 @app.post("/upload/nutrition")
-async def read_image_nutrition(file_upload: UploadFile = File(...)):
+async def read_image_nutrition(file_upload: UploadFile = File(...), current_user: str = Depends(get_current_user)):
 
     file_uploaded = await file_upload.read()
 
