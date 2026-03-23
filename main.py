@@ -3,7 +3,7 @@
 from fastapi import FastAPI, Request, File, UploadFile, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from jose import jwt
+from jose import jwt, JWTError
 
 from pydantic import BaseModel
 from typing import List
