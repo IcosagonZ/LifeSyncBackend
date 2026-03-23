@@ -1,13 +1,13 @@
 # FastAPI backend for LifeSyncAI
 # Run using fastapi dev
 from fastapi import FastAPI, Request, File, UploadFile, Depends, HTTPException
-from pydantic import BaseModel
-from typing import List
 from sqlalchemy.orm import Session
 
-import LifeSyncBackend.models, LifeSyncBackend.schemas, LifeSyncBackend.auth
+from pydantic import BaseModel
+from typing import List
 import datetime
 
+import LifeSyncBackend.models, LifeSyncBackend.schemas, LifeSyncBackend.auth
 from LifeSyncBackend.database import SessionLocal, engine
 
 # Import models
@@ -57,31 +57,52 @@ def get_db():
 
 @app.post("/signup")
 def signup(user: UserCreate, db: Session = Depends(get_db)):
-    existing = db.query(models.User).filter(models.User.username == user.username).first()
+    existing = db.query(LifeSyncBackend.models.User).filter(LifeSyncBackend.models.User.username == user.username).first()
     if existing:
-        raise HTTPException(status_code=400, detail="User already exists")
+        #raise HTTPException(status_code=400, detail="User already exists")
+        return {
+            "status": "ERROR",
+            "version": "0.1.0",
+            "message": "User already exists"
+        }
 
-    hashed = auth.hash_password(user.password)
+    hashed = LifeSyncBackend.auth.hash_password(user.password)
 
-    new_user = models.User(username=user.username, password=hashed)
+    new_user = LifeSyncBackend.models.User(username=user.username, password=hashed)
     db.add(new_user)
     db.commit()
 
-    return {"message": "User created"}
+    return {
+        "status": "OK",
+        "version": "0.1.0",
+        "message": "User created"
+    }
 
 @app.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+    db_user = db.query(LifeSyncBackend.models.User).filter(LifeSyncBackend.models.User.username == user.username).first()
 
-    if not db_user or not auth.verify_password(user.password, db_user.password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+    print(f"Got {user}")
 
-    token = auth.create_token({"sub": user.username})
+    if(not db_user or not LifeSyncBackend.auth.verify_password(user.password, db_user.password)):
+        #raise HTTPException(status_code=401, detail="Invalid credentials")
+        print("User doesnt exist")
+        return{
+            "status": "ERROR",
+            "version": "0.1.0",
+            "message": "Invalid username/password",
+        }
+    else:
+        print("User exist")
+        token = LifeSyncBackend.auth.create_token({"sub": user.username})
 
-    return {
-        "access_token": token,
-        "token_type": "bearer"
-    }
+        return{
+            "status": "OK",
+            "version": "0.1.0",
+            "message": "Login success",
+            "access_token": token,
+            "token_type": "bearer"
+        }
 
 @app.get("/")
 def read_root():
