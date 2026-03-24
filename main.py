@@ -9,13 +9,18 @@ from pydantic import BaseModel
 from typing import List
 import datetime
 
-import LifeSyncBackend.models, LifeSyncBackend.schemas, LifeSyncBackend.auth
+# LLM interfacing
+from openai import OpenAI
 
+# Import local libraries
+import LifeSyncBackend.models, LifeSyncBackend.schemas, LifeSyncBackend.auth
 from LifeSyncBackend.auth import SECRET_KEY, ALGORITHM
 from LifeSyncBackend.database import SessionLocal, engine
 
 # Import models
 from LifeSyncBackend.schemas.all_schema import AllDataRequest
+from LifeSyncBackend.schemas.chat_schema import ChatRequest
+
 
 from LifeSyncBackend.schemas.academics_absent_schema import AcademicsAbsentData, AcademicsAbsentDataRequest
 from LifeSyncBackend.schemas.academics_assignment_schema import AcademicsAssignmentData, AcademicsAssignmentDataRequest
@@ -50,6 +55,20 @@ from LifeSyncBackend.analyzer.workout_analyzer import workout_analyzer
 
 app = FastAPI()
 
+openai_client = OpenAI(
+    base_url="http://localhost:1337/v1",
+    api_key="not-needed"
+)
+openai_model = "janhq/Jan-v3-4b-base-instruct-Q4_K_XL"
+openai_system = '''
+Role: You are a specialized Health & Wellness Assistant for students.
+Constraint 0: Answer in 5-6 sentences max.
+Constraint 1: You ONLY answer questions related to physical health, mental well-being, sleep, nutrition, and academic stress management.
+Constraint 2: If a user asks about unrelated topics (e.g., coding, history, politics, or general trivia), you must politely decline and pivot back to health.
+Constraint 3: CRITICAL: You are an AI, not a doctor. Every response regarding symptoms must include a disclaimer to consult a professional.
+Constraint 4: If a user mentions self-harm or a crisis, provide immediate emergency resources (e.g., [Local Helpline Number]).
+'''
+
 LifeSyncBackend.models.Base.metadata.create_all(bind=engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -74,6 +93,8 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         return user_id
     except JWTError:
         raise credentials_exception
+
+
 
 @app.post("/signup")
 def signup(user: UserCreate, db: Session = Depends(get_db)):
@@ -139,6 +160,30 @@ async def read_client_version(request: Request):
         "status": "OK",
         "version": "0.1.0"
     }
+
+@app.post("/chat")
+async def read_chat_request(request: ChatRequest):
+    try:
+        response = openai_client.chat.completions.create(
+            model=openai_model,
+            messages=[
+                {"role":"system", "content": openai_system},
+                {"role":"user", "content": request.message},
+            ],
+            temperature=0.5
+
+        )
+        return {
+            "status": "OK",
+            "version": "0.1.0",
+            "message": response.choices[0].message.content
+        }
+    except Exception as e:
+        return {
+            "status": "ERROR",
+            "version": "0.1.0",
+            "message": str(e)
+        }
 
 @app.post("/recommendations/academics/absent")
 async def read_data_academics_absent(payload: AcademicsAbsentDataRequest, current_user: str = Depends(get_current_user)):
