@@ -2,11 +2,9 @@ from typing import List
 from LifeSyncBackend.schemas.time_schema import TimeData, TimeDataRequest
 
 def time_analyzer(data: List[TimeData]):
-    recommendation = [
-    ]
-
     insight = [
     ]
+    score = 0
 
     time_goals = {
         "study": 60,
@@ -30,13 +28,14 @@ def time_analyzer(data: List[TimeData]):
             "No data",
             "No time records found."
         ])
-        return [recommendation, insight]
+        return [insight, score]
 
     for event in time_goals:
         goal = time_goals[event]
         actual = event_time.get(event, 0)
 
         if actual >= goal:
+            score += 25
             insight.append([
                 "Time",
                 "{} goal met".format(event.capitalize()),
@@ -44,6 +43,7 @@ def time_analyzer(data: List[TimeData]):
             ])
 
         elif actual >= goal - 10:
+            score += 10
             insight.append([
                 "Time",
                 "{} nearly met".format(event.capitalize()),
@@ -51,10 +51,13 @@ def time_analyzer(data: List[TimeData]):
             ])
 
         else:
-            recommendation.append([
+            insight.append([
                 "Time",
                 "{} below goal".format(event.capitalize()),
                 "You spent {} minutes on {}. Try to reach {} minutes.".format(actual, event, goal)
             ])
 
-    return [recommendation, insight]
+    if(score>100):
+        score=100
+
+    return [insight, score]

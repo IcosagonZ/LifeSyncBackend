@@ -2,11 +2,9 @@ from typing import List
 from LifeSyncBackend.schemas.bodymeasurement_schema import BodyMeasurementData, BodyMeasurementDataRequest
 
 def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
-    recommendation = [
-    ]
-
     insight = [
     ]
+    score = 0
    
     user_weight = None
     user_height = None
@@ -28,7 +26,7 @@ def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
             "Insufficient data",
             "Height or weight data missing for BMI calculation."
         ])
-        return [recommendation, insight]
+        return [insight, score]
 
     if weight_unit == "kg":
         weight_kg = user_weight
@@ -55,7 +53,7 @@ def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
     }
 
     if user_bmi < bmi_ranges["underweight"]:
-        recommendation.append([
+        insight.append([
             "Body",
             "Underweight",
             "Your BMI is {:.2f}. You are below the healthy range.".format(user_bmi)
@@ -69,14 +67,14 @@ def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
         ])
 
     elif user_bmi <= bmi_ranges["overweight"]:
-        recommendation.append([
+        insight.append([
             "Body",
             "Overweight",
             "Your BMI is {:.2f}. Consider regular exercise and balanced diet.".format(user_bmi)
         ])
 
     else:
-        recommendation.append([
+        insight.append([
             "Body",
             "Obese",
             "Your BMI is {:.2f}. It is advisable to adopt a healthier lifestyle.".format(user_bmi)
@@ -88,4 +86,4 @@ def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
         "Your calculated BMI is {:.2f}.".format(user_bmi)
     ])
 
-    return [recommendation, insight]
+    return [insight, score]

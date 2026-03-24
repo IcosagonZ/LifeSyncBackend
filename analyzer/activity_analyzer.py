@@ -2,11 +2,9 @@ from typing import List
 from LifeSyncBackend.schemas.activity_schema import ActivityData, ActivityDataRequest
 
 def activity_analyzer(data: List[ActivityData]):
-    recommendation = [
-    ]
-
     insight = [
     ]
+    score = 0
 
     step_goal = 10000          
     distance_goal = 5         
@@ -28,11 +26,12 @@ def activity_analyzer(data: List[ActivityData]):
             "No activity data",
             "No physical activity records found."
         ])
-        return [recommendation, insight]
+        return [insight, score]
 
     avg_duration = total_duration / total_sessions
 
     if avg_duration >= 30:
+        score = 50
         insight.append([
             "Activity",
             "Good activity level",
@@ -40,6 +39,7 @@ def activity_analyzer(data: List[ActivityData]):
         ])
 
     elif avg_duration >= 15:
+        score = 40
         recommendation.append([
             "Activity",
             "Moderate activity",
@@ -47,6 +47,7 @@ def activity_analyzer(data: List[ActivityData]):
         ])
 
     else:
+        score = 0
         recommendation.append([
             "Activity",
             "Low activity level",
@@ -54,6 +55,7 @@ def activity_analyzer(data: List[ActivityData]):
         ])
 
     if total_distance >= distance_goal:
+        score += 25
         insight.append([
             "Activity",
             "Distance goal met",
@@ -69,6 +71,7 @@ def activity_analyzer(data: List[ActivityData]):
     steps_estimated = total_distance * 1300
 
     if steps_estimated >= step_goal:
+        score += 25
         insight.append([
             "Activity",
             "Step goal met",
@@ -93,4 +96,4 @@ def activity_analyzer(data: List[ActivityData]):
         "You covered a total distance of {:.2f} units.".format(total_distance)
     ])
 
-    return [recommendation, insight]
+    return [insight, score]

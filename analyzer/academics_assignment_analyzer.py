@@ -3,11 +3,9 @@ from LifeSyncBackend.schemas.academics_assignment_schema import AcademicsAssignm
 from datetime import datetime
 
 def academics_assignment_analyzer(data: List[AcademicsAssignmentData]):
-    recommendation = [
-    ]
-
     insight = [
     ]
+    score = 0
 
     pending = []
     overdue = []
@@ -31,10 +29,12 @@ def academics_assignment_analyzer(data: List[AcademicsAssignmentData]):
             "All assignments completed",
             "You have no pending assignments."
         ])
-        return [recommendation, insight]
+        score = 100
+        return [insight, score]
 
     if len(pending) > 0:
-        recommendation.append([
+        score = 100
+        insight.append([
             "Academics",
             "Pending assignments",
             "The following assignments are to be submitted before their due dates: {}.".format(
@@ -43,7 +43,8 @@ def academics_assignment_analyzer(data: List[AcademicsAssignmentData]):
         ])
 
     if len(overdue) > 0:
-        recommendation.append([
+        score = 50
+        insight.append([
             "Academics",
             "Overdue assignments",
             "The following assignments have passed their due dates: {}.".format(
@@ -51,4 +52,4 @@ def academics_assignment_analyzer(data: List[AcademicsAssignmentData]):
             )
         ])
 
-    return [recommendation, insight]
+    return [insight, score]

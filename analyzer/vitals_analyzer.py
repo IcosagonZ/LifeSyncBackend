@@ -2,11 +2,9 @@ from typing import List
 from LifeSyncBackend.schemas.vitals_schema import VitalsData, VitalsDataRequest
 
 def vitals_analyzer(data: List[VitalsData]):
-    recommendation = [
-    ]
-
     insight = [
     ]
+    score = 0
 
     if len(data) == 0:
         insight.append([
@@ -14,7 +12,7 @@ def vitals_analyzer(data: List[VitalsData]):
             "No data",
             "No vital records found."
         ])
-        return [recommendation, insight]
+        return [insight, score]
 
     for item in data:
         insight.append([
@@ -23,4 +21,4 @@ def vitals_analyzer(data: List[VitalsData]):
             "Your {} is {} {}".format(item.type, item.value, item.unit)
         ])
 
-    return [recommendation, insight]
+    return [insight, score]

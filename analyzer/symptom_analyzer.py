@@ -2,10 +2,8 @@ from typing import List
 from LifeSyncBackend.schemas.symptom_schema import SymptomData, SymptomDataRequest
 
 def symptom_analyzer(data: List[SymptomData]):
-    recommendation = [
-    ]
-
     insight = [
     ]
+    score = 0
 
-    return [recommendation, insight]
+    return [insight, score]

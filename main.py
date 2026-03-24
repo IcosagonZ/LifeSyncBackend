@@ -185,229 +185,215 @@ async def read_chat_request(request: ChatRequest):
             "message": str(e)
         }
 
-@app.post("/recommendations/academics/absent")
+@app.post("/insights/academics/absent")
 async def read_data_academics_absent(payload: AcademicsAbsentDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = academics_absent_analyzer(payload.data)
+    [insight, score] = academics_absent_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "academics_absent",
         "score": 67,
-        "recommendation": recommendation,
         "insight": insight,
     }
 
-@app.post("/recommendations/academics/assignment")
+@app.post("/insights/academics/assignment")
 async def read_data_academics_assignment(payload: AcademicsAssignmentDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = academics_assignment_analyzer(payload.data)
+    [insight, score] = academics_assignment_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "academics_absent",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/academics/exam")
+@app.post("/insights/academics/exam")
 async def read_data_academics_exam(payload: AcademicsExamDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = academics_exam_analyzer(payload.data)
+    [insight, score] = academics_exam_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "academics_exam",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/academics/mark")
+@app.post("/insights/academics/mark")
 async def read_data_academics_mark(payload: AcademicsMarkDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = academics_mark_analyzer(payload.data)
+    [insight, score] = academics_mark_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "academics_mark",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/activity")
+@app.post("/insights/activity")
 async def read_data_activity(payload: ActivityDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = activity_analyzer(payload.data)
+    [insight, score] = activity_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "activity",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/bodymeasurement")
+@app.post("/insights/bodymeasurement")
 async def read_data_bodymeasurement(payload: BodyMeasurementDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = bodymeasurement_analyzer(payload.data)
+    [insight, score] = bodymeasurement_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "bodymeasurement",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/mind/mood")
+@app.post("/insights/mind/mood")
 async def read_data_mind_mood(payload: MindMoodDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = mind_mood_analyzer(payload.data)
+    [insight, score] = mind_mood_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "mind_mood",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/note")
+@app.post("/insights/note")
 async def read_data_note(payload: NoteDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = note_analyzer(payload.data)
+    [insight, score] = note_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "note",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/symptom")
+@app.post("/insights/symptom")
 async def read_data_symptom(payload: SymptomDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = symptom_analyzer(payload.data)
+    [insight, score] = symptom_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "symptom",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/time")
+@app.post("/insights/time")
 async def read_data_time(payload: TimeDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = time_analyzer(payload.data)
+    [insight, score] = time_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "time",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/workout")
+@app.post("/insights/workout")
 async def read_data_workout(payload: WorkoutDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = workout_analyzer(payload.data)
+    [insight, score] = workout_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "workout",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/vitals")
+@app.post("/insights/vitals")
 async def read_data_vitals(payload: VitalsDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = vitals_analyzer(payload)
+    [insight, score] = vitals_analyzer(payload)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "vitals",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/nutrition")
+@app.post("/insights/nutrition")
 async def read_data_nutrition(payload: NutritionDataRequest, current_user: str = Depends(get_current_user)):
     #print("Client>Version: {}".format(payload.version))
     #print("Client>Data: Received {} rows".format(len(payload.data)))
 
-    [recommendation, insight] = nutrition_analyzer(payload.data)
+    [insight, score] = nutrition_analyzer(payload.data)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "nutrition",
-        "score": 67,
-        "recommendation": recommendation,
+        "score": score,
         "insight": insight,
     }
 
-@app.post("/recommendations/all")
+@app.post("/insights/all")
 async def read_data_all(payload: AllDataRequest, current_user: str = Depends(get_current_user)):
     print("Client>User: {}".format(current_user))
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received all data")
 
-    recommendation, insight = all_analyzer(payload)
+    insights, scores = all_analyzer(payload)
 
     return {
         "status": "OK",
         "version": "0.1.0",
         "type": "vitals",
-        "score": 67,
-        "recommendation": recommendation,
-        "insight": insight,
+        "scores": scores,
+        "insight": insights,
     }
 
 @app.post("/upload/nutrition")

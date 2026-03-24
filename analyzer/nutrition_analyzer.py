@@ -2,11 +2,20 @@ from typing import List
 from LifeSyncBackend.schemas.nutrition_schema import NutritionData, NutritionDataRequest
 
 def nutrition_analyzer(data: List[NutritionData]):
-    recommendation = [
-    ]
-
     insight = [
     ]
+    score = 0
+
+    total_nutrition = len(data)
+
+    if total_nutrition == 0:
+        insight.append([
+            "Nutrition",
+            "No data",
+            "No nutrition records found.",
+            score
+        ])
+        return [insight, score]
 
     user_weight = 64 #kg
     user_height = 170 #cm
@@ -50,31 +59,38 @@ def nutrition_analyzer(data: List[NutritionData]):
 
     # Energy requirements
     if(abs(total_calories-user_total_calorie_needs)<100):
-        insight.append(["Nutrition", "Meeting daily energy requirements", "You are meeting your daily energy requirements of {} cal".format(user_total_calorie_needs)])
+        insight.append(["Nutrition", "Meeting daily energy requirements", "You are meeting your daily energy requirements of {} cal".format(int(user_total_calorie_needs))])
+        score=70
     elif(total_calories<user_total_calorie_needs):
-        recommendation.append(["Nutrition", "Consuming less than energy requirements", "You are not meeting your daily energy requirements of {} cal".format(user_total_calorie_needs)])
+        insight.append(["Nutrition", "Consuming less than energy requirements", "You are not meeting your daily energy requirements of {} cal".format(int(user_total_calorie_needs))])
+        score=50
     else:
-        recommendation.append(["Nutrition", "Consuming more than energy requirements", "You are eating more than your daily energy requirements of {} cal".format(user_total_calorie_needs)])
+        insight.append(["Nutrition", "Consuming more than energy requirements", "You are eating more than your daily energy requirements of {} cal".format(int(user_total_calorie_needs))])
+        score=50
 
     # Carb requirements
     user_carbs = 130
     if(abs(total_carbs-user_carbs)<10):
-        insight.append(["Nutrition", "Meeting carbohydrate requirements", "You are meeting your daily carbohydrate requirements of {} g".format(user_carbs)])
+        insight.append(["Nutrition", "Meeting carbohydrate requirements", "You are meeting your daily carbohydrate requirements of {} g".format(int(user_carbs))])
+        score+=10
     elif(total_calories<user_carbs):
-        recommendation.append(["Nutrition", "Short of carbohydrate requirements", "You are not meeting your daily carbohydrate requirements of {} g".format(user_carbs)])
+        insight.append(["Nutrition", "Short of carbohydrate requirements", "You are not meeting your daily carbohydrate requirements of {} g".format(int(user_carbs))])
     else:
-        recommendation.append(["Nutrition", "Short of carbohydrate requirements", "You are consuming more than your daily carbohydrate requirements of {} g".format(user_carbs)])
+        insight.append(["Nutrition", "Short of carbohydrate requirements", "You are consuming more than your daily carbohydrate requirements of {} g".format(int(user_carbs))])
+        score-=10
 
     # Fat requirements
     user_fats_lower = user_total_calorie_needs*0.2
     user_fats_high = user_total_calorie_needs*0.35
 
     if(total_fats>user_fats_lower and total_fats<user_fats_high):
-        insight.append(["Nutrition", "Meeting fat requirements", "You are meeting your daily fat requirements of {} g to {} g".format(user_fats_lower, user_fats_high)])
+        insight.append(["Nutrition", "Meeting fat requirements", "You are meeting your daily fat requirements of {} g to {} g".format(int(user_fats_lower), int(user_fats_high))])
+        score+=10
     elif(total_fats<user_fats_lower):
-        recommendation.append(["Nutrition", "Short of fat requirements", "You are not meeting your fat requirements of {} g to {} g".format(user_fats_lower, user_fats_high)])
+        insight.append(["Nutrition", "Short of fat requirements", "You are not meeting your fat requirements of {} g to {} g".format(int(user_fats_lower), int(user_fats_high))])
+        score-=10
     else:
-        recommendation.append(["Nutrition", "Short of fat requirements", "You are consuming more than your daily fat requirements of {} g to {} g".format(user_fats_lower, user_fats_high)])
+        insight.append(["Nutrition", "Short of fat requirements", "You are consuming more than your daily fat requirements of {} g to {} g".format(int(user_fats_lower), int(user_fats_high))])
 
     # Protein requirements
     protein_requirement = {
@@ -83,10 +99,12 @@ def nutrition_analyzer(data: List[NutritionData]):
     }
     user_proteins = protein_requirement[user_gender]
     if(abs(total_fats-user_proteins)<10):
-        insight.append(["Nutrition", "Meeting protein requirements", "You are meeting your daily protein requirements of {} g".format(user_proteins)])
+        insight.append(["Nutrition", "Meeting protein requirements", "You are meeting your daily protein requirements of {} g".format(int(user_proteins))])
+        score+=10
     elif(total_calories<user_proteins):
-        recommendation.append(["Nutrition", "Short of protein requirements", "You are not meeting your daily protein requirements of {} g".format(user_proteins)])
+        insight.append(["Nutrition", "Short of protein requirements", "You are not meeting your daily protein requirements of {} g".format(int(user_proteins))])
+        score-=10
     else:
-        recommendation.append(["Nutrition", "Short of protein requirements", "You are consuming more than your daily protein requirements of {} g".format(user_proteins)])
+        insight.append(["Nutrition", "Short of protein requirements", "You are consuming more than your daily protein requirements of {} g".format(int(user_proteins))])
 
-    return [recommendation, insight]
+    return [insight, score]

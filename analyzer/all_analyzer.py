@@ -16,63 +16,63 @@ from LifeSyncBackend.analyzer.workout_analyzer import workout_analyzer
 from LifeSyncBackend.schemas.all_schema import AllDataRequest
 
 def all_analyzer(data: AllDataRequest):
-    recommendation = [
+    scores = [
     ]
 
     insight = [
     ]
 
     # Get analysis
-    r1, i1 = academics_absent_analyzer(data.academics_absent_data)
-    recommendation.extend(r1)
-    insight.extend(i1)
+    insight_data, score_data = academics_absent_analyzer(data.academics_absent_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
-    r2, i2 = academics_assignment_analyzer(data.academics_assignment_data)
-    recommendation.extend(r2)
-    insight.extend(i2)
+    insight_data, score_data = academics_assignment_analyzer(data.academics_assignment_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
     #r3, i3 = academics_exam_analyzer(data.academics_exam_data)
-    #recommendation.extend(r3)
+    #scores.append(r3)
     #insight.extend(i3)
 
-    r4, i4 = academics_mark_analyzer(data.academics_mark_data)
-    recommendation.extend(r4)
-    insight.extend(i4)
+    insight_data, score_data = academics_mark_analyzer(data.academics_mark_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
-    r5, i5 = activity_analyzer(data.activity_data)
-    recommendation.extend(r5)
-    insight.extend(i5)
+    insight_data, score_data = activity_analyzer(data.activity_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
-    r6, i6 = bodymeasurement_analyzer(data.bodymeasurement_data)
-    recommendation.extend(r6)
-    insight.extend(i6)
+    insight_data, score_data = bodymeasurement_analyzer(data.bodymeasurement_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
-    r7, i7 = mind_mood_analyzer(data.mind_mood_data)
-    recommendation.extend(r7)
-    insight.extend(i7)
+    insight_data, score_data = mind_mood_analyzer(data.mind_mood_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
     #r8, i8 = note_analyzer(data.note_data)
-    #recommendation.extend(r8)
+    #scores.append(r8)
     #insight.extend(i8)
 
-    r9, i9 = nutrition_analyzer(data.nutrition_data)
-    recommendation.extend(r9)
-    insight.extend(i9)
+    insight_data, score_data = nutrition_analyzer(data.nutrition_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
-    r10, i10 = symptom_analyzer(data.symptom_data)
-    recommendation.extend(r10)
-    insight.extend(i10)
+    insight_data, score_data = symptom_analyzer(data.symptom_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
-    r11, i11 = time_analyzer(data.time_data)
-    recommendation.extend(r11)
-    insight.extend(i11)
+    insight_data, score_data = time_analyzer(data.time_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
-    r12, i12 = vitals_analyzer(data.vitals_data)
-    recommendation.extend(r12)
-    insight.extend(i12)
+    insight_data, score_data = vitals_analyzer(data.vitals_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
-    r13, i13 = workout_analyzer(data.workout_data)
-    recommendation.extend(r13)
-    insight.extend(i13)
+    insight_data, score_data = workout_analyzer(data.workout_data)
+    insight.extend(insight_data)
+    scores.append(score_data)
 
-    return [recommendation, insight]
+    return [insight, scores]

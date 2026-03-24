@@ -2,11 +2,10 @@ from typing import List
 from LifeSyncBackend.schemas.academics_mark_schema import AcademicsMarkData, AcademicsMarkDataRequest
 
 def academics_mark_analyzer(data: List[AcademicsMarkData]):
-    recommendation = [
-    ]
-
     insight = [
     ]
+    score = 0
+
     total_marks_obtained = 0
     total_max_marks = 0
 
@@ -20,11 +19,12 @@ def academics_mark_analyzer(data: List[AcademicsMarkData]):
             "No marks data",
             "No marks records available for analysis."
         ])
-        return [recommendation, insight]
+        return [insight, score]
 
     percentage = (total_marks_obtained / total_max_marks) * 100
 
     if percentage >= 75:
+        score = 100
         insight.append([
             "Academics",
             "Strong academic performance",
@@ -32,6 +32,7 @@ def academics_mark_analyzer(data: List[AcademicsMarkData]):
         ])
 
     elif percentage >= 50:
+        score = 50
         recommendation.append([
             "Academics",
             "Average performance",
@@ -39,6 +40,7 @@ def academics_mark_analyzer(data: List[AcademicsMarkData]):
         ])
 
     else:
+        score = 20
         recommendation.append([
             "Academics",
             "Low performance",
@@ -51,4 +53,4 @@ def academics_mark_analyzer(data: List[AcademicsMarkData]):
         "You scored {:.2f} out of {:.2f} total marks.".format(total_marks_obtained, total_max_marks)
     ])
 
-    return [recommendation, insight]
+    return [insight, score]

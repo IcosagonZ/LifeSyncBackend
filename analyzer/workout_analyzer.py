@@ -2,11 +2,9 @@ from typing import List
 from LifeSyncBackend.schemas.workout_schema import WorkoutData, WorkoutDataRequest
 
 def workout_analyzer(data: List[WorkoutData]):
-    recommendation = [
-    ]
-
     insight = [
     ]
+    score = 0
 
     total_workouts = len(data)
 
@@ -16,7 +14,9 @@ def workout_analyzer(data: List[WorkoutData]):
             "No data",
             "No workout records found."
         ])
-        return [recommendation, insight]
+        return [insight, score]
+
+    score = 100
 
     insight.append([
         "Workout",
@@ -31,4 +31,4 @@ def workout_analyzer(data: List[WorkoutData]):
             "Duration: {} mins, Calories: {}".format(item.duration, item.calories)
         ])
 
-    return [recommendation, insight]
+    return [insight, score]
