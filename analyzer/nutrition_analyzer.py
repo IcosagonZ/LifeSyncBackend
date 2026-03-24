@@ -1,7 +1,8 @@
 from typing import List
 from LifeSyncBackend.schemas.nutrition_schema import NutritionData, NutritionDataRequest
+from LifeSyncBackend.schemas.goals_schema import GoalsData
 
-def nutrition_analyzer(data: List[NutritionData]):
+def nutrition_analyzer(data: List[NutritionData], goals: GoalsData):
     insight = [
     ]
     score = 0
@@ -17,10 +18,10 @@ def nutrition_analyzer(data: List[NutritionData]):
         ])
         return [insight, score]
 
-    user_weight = 64 #kg
-    user_height = 170 #cm
-    user_age = 21
-    user_gender = "M"
+    user_weight = goals.height #kg
+    user_height = goals.weight #cm
+    user_age = goals.age
+    user_gender = goals.gender
     user_activity = "lightly_active"
 
     # Calculate calories needed

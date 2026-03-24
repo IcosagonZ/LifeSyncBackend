@@ -1,15 +1,16 @@
 from typing import List
 from LifeSyncBackend.schemas.time_schema import TimeData, TimeDataRequest
+from LifeSyncBackend.schemas.goals_schema import GoalsData
 
-def time_analyzer(data: List[TimeData]):
+def time_analyzer(data: List[TimeData], goals: GoalsData):
     insight = [
     ]
     score = 0
 
     time_goals = {
-        "study": 60,
-        "sleep": 360,      
-        "exercise": 30,
+        "study": goals.study*60,
+        "sleep": goals.sleep*60,
+        "exercise": goals.exercise*60,
     }
 
     event_time = {}

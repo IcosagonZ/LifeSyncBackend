@@ -17,6 +17,9 @@ from LifeSyncBackend.schemas.vitals_schema import VitalsData, VitalsDataRequest
 from LifeSyncBackend.schemas.workout_schema import WorkoutData, WorkoutDataRequest
 from LifeSyncBackend.schemas.user_schema import UserCreate, UserLogin
 
+from LifeSyncBackend.schemas.goals_schema import GoalsData
+
+
 class AllDataRequest(BaseModel):
     version: str
     academics_absent_data: List[AcademicsAbsentData]
@@ -30,3 +33,4 @@ class AllDataRequest(BaseModel):
     time_data: List[TimeData]
     vitals_data: List[VitalsData]
     workout_data: List[WorkoutData]
+    goals: GoalsData

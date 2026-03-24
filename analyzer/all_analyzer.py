@@ -39,7 +39,7 @@ def all_analyzer(data: AllDataRequest):
     insight.extend(insight_data)
     scores.append(score_data)
 
-    insight_data, score_data = activity_analyzer(data.activity_data)
+    insight_data, score_data = activity_analyzer(data.activity_data, data.goals)
     insight.extend(insight_data)
     scores.append(score_data)
 
@@ -55,7 +55,7 @@ def all_analyzer(data: AllDataRequest):
     #scores.append(r8)
     #insight.extend(i8)
 
-    insight_data, score_data = nutrition_analyzer(data.nutrition_data)
+    insight_data, score_data = nutrition_analyzer(data.nutrition_data, data.goals)
     insight.extend(insight_data)
     scores.append(score_data)
 
@@ -63,7 +63,7 @@ def all_analyzer(data: AllDataRequest):
     insight.extend(insight_data)
     scores.append(score_data)
 
-    insight_data, score_data = time_analyzer(data.time_data)
+    insight_data, score_data = time_analyzer(data.time_data, data.goals)
     insight.extend(insight_data)
     scores.append(score_data)
 

@@ -1,13 +1,14 @@
 from typing import List
 from LifeSyncBackend.schemas.activity_schema import ActivityData, ActivityDataRequest
+from LifeSyncBackend.schemas.goals_schema import GoalsData
 
-def activity_analyzer(data: List[ActivityData]):
+def activity_analyzer(data: List[ActivityData], goals: GoalsData):
     insight = [
     ]
     score = 0
 
-    step_goal = 10000          
-    distance_goal = 5         
+    step_goal = goals.steps
+    distance_goal = goals.distance
 
     total_duration = 0
     total_calories = 0
