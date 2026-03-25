@@ -44,7 +44,7 @@ def time_analyzer(data: List[TimeData], goals: GoalsData):
             ])
 
         elif actual >= goal - 10:
-            score += 10
+            score += 20
             insight.append([
                 "Time",
                 "{} nearly met".format(event.capitalize()),

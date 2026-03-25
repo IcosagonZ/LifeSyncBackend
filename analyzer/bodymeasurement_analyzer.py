@@ -53,6 +53,7 @@ def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
     }
 
     if user_bmi < bmi_ranges["underweight"]:
+        score = 30
         insight.append([
             "Body",
             "Underweight",
@@ -60,6 +61,7 @@ def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
         ])
 
     elif user_bmi <= bmi_ranges["normal"]:
+        score = 100
         insight.append([
             "Body",
             "Healthy BMI",
@@ -67,6 +69,7 @@ def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
         ])
 
     elif user_bmi <= bmi_ranges["overweight"]:
+        score = 50
         insight.append([
             "Body",
             "Overweight",
@@ -74,6 +77,7 @@ def bodymeasurement_analyzer(data: List[BodyMeasurementData]):
         ])
 
     else:
+        score = 10
         insight.append([
             "Body",
             "Obese",

@@ -3,7 +3,7 @@ from typing import List
 
 class SymptomData(BaseModel):
     name: str
-    intensity: int
+    intensity: str
     resolved: int
     end_date: str
     entry_date: str

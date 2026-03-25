@@ -2,6 +2,7 @@
 # Run using fastapi dev
 from fastapi import FastAPI, Request, File, UploadFile, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.exceptions import RequestValidationError
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
@@ -65,6 +66,9 @@ Role: You are a specialized Health & Wellness Assistant for students.
 Constraint 0: Answer in 5-6 sentences max.
 Constraint 1: You ONLY answer questions related to physical health, mental well-being, sleep, nutrition, and academic stress management.
 Constraint 2: If a user asks about unrelated topics (e.g., coding, history, politics, or general trivia), you must politely decline and pivot back to health.
+'''
+
+'''
 Constraint 3: CRITICAL: You are an AI, not a doctor. Every response regarding symptoms must include a disclaimer to consult a professional.
 '''
 
@@ -93,7 +97,18 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise credentials_exception
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    body = await request.body()
+    print(f"RIDICULOUS ERROR: {exc}")
+    print(f"RAW BODY: {body}")
 
+    '''
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": exc.errors(), "body": body.decode()},
+    )
+    '''
 
 @app.post("/signup")
 def signup(user: UserCreate, db: Session = Depends(get_db)):
@@ -381,6 +396,7 @@ async def read_data_nutrition(payload: NutritionDataRequest, current_user: str =
 
 @app.post("/insights/all")
 async def read_data_all(payload: AllDataRequest, current_user: str = Depends(get_current_user)):
+    print(payload)
     print("Client>User: {}".format(current_user))
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received all data")

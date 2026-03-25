@@ -41,7 +41,7 @@ def activity_analyzer(data: List[ActivityData], goals: GoalsData):
 
     elif avg_duration >= 15:
         score = 40
-        recommendation.append([
+        insight.append([
             "Activity",
             "Moderate activity",
             "Your activity level is {:.2f} minutes. Try to increase daily exercise.".format(avg_duration)
@@ -49,7 +49,7 @@ def activity_analyzer(data: List[ActivityData], goals: GoalsData):
 
     else:
         score = 0
-        recommendation.append([
+        insight.append([
             "Activity",
             "Low activity level",
             "You are only active for {:.2f} minutes. Increase physical activity for better health.".format(avg_duration)
@@ -63,7 +63,7 @@ def activity_analyzer(data: List[ActivityData], goals: GoalsData):
             "You covered {:.2f} units and met your distance goal of {} units.".format(total_distance, distance_goal)
         ])
     else:
-        recommendation.append([
+        insight.append([
             "Activity",
             "Distance below goal",
             "You covered {:.2f} units. Try to reach {} units.".format(total_distance, distance_goal)
@@ -79,7 +79,7 @@ def activity_analyzer(data: List[ActivityData], goals: GoalsData):
             "You achieved approximately {} steps, meeting your goal of {} steps.".format(int(steps_estimated), step_goal)
         ])
     else:
-        recommendation.append([
+        insight.append([
             "Activity",
             "Step goal not met",
             "You achieved approximately {} steps. Try to reach {} steps.".format(int(steps_estimated), step_goal)
