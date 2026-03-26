@@ -30,7 +30,7 @@ FastAPI backend for LifeSync app with ML recommendation and analysis support
 
 ## Running
 - Go to root of project folder
-- Run `uvicorn LifeSyncBackend.main:app --reload`
+- Run `uvicorn LifeSyncBackend.main:app --reload --host 0.0.0.0 --port 8000`
 
 ## References
 

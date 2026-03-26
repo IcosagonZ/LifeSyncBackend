@@ -3,6 +3,8 @@ from LifeSyncBackend.schemas.time_schema import TimeData, TimeDataRequest
 from LifeSyncBackend.schemas.goals_schema import GoalsData
 
 def time_analyzer(data: List[TimeData], goals: GoalsData):
+    #print(data)
+
     insight = [
     ]
     score = 0

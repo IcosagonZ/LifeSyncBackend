@@ -396,7 +396,7 @@ async def read_data_nutrition(payload: NutritionDataRequest, current_user: str =
 
 @app.post("/insights/all")
 async def read_data_all(payload: AllDataRequest, current_user: str = Depends(get_current_user)):
-    print(payload)
+    #print(payload)
     print("Client>User: {}".format(current_user))
     print("Client>Version: {}".format(payload.version))
     print("Client>Data: Received all data")
